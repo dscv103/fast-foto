@@ -1,0 +1,2 @@
+[console_scripts]
+fast-foto = fast_foto.cli:main

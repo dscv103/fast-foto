@@ -1,0 +1,3 @@
+fast_foto
+portra400_emulation
+preprocessing
