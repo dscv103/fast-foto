@@ -3,7 +3,7 @@ name = "fast_foto"
 version = "0.1.0"
 description = "Preprocessing and Portra 400 emulation pipeline"
 authors = [{ name = "fast-foto" }]
-requires-python = ">=3.12,<3.14"
+requires-python = ">=3.13,<3.14"
 dependencies = [
     "numpy>=1.26",
     "Pillow>=10.2.0",
