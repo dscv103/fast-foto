@@ -36,13 +36,13 @@ HSL_SECTORS = [
 ]
 
 # Master tone curve control points (x->y)
-MASTER_CURVE_X = np.array([0.0, 0.05, 0.25, 0.50, 0.75, 0.90, 1.0], dtype=np.float32)
-MASTER_CURVE_Y = np.array([0.05, 0.09, 0.30, 0.52, 0.76, 0.93, 0.98], dtype=np.float32)
+MASTER_CURVE_X = np.array([0.0, 0.10, 0.25, 0.50, 0.75, 0.90, 1.0], dtype=np.float32)
+MASTER_CURVE_Y = np.array([0.0, 0.14, 0.32, 0.52, 0.74, 0.92, 1.0], dtype=np.float32)
 
 # Per-channel curves
-RED_CURVE_Y = np.array([0.05, 0.10, 0.31, 0.54, 0.77, 0.93, 0.98], dtype=np.float32)
-GREEN_CURVE_Y = np.array([0.05, 0.09, 0.30, 0.52, 0.76, 0.93, 0.98], dtype=np.float32)
-BLUE_CURVE_Y = np.array([0.05, 0.08, 0.27, 0.48, 0.70, 0.88, 0.96], dtype=np.float32)
+RED_CURVE_Y =   np.array([0.0, 0.16, 0.34, 0.54, 0.75, 0.92, 1.0], dtype=np.float32)
+GREEN_CURVE_Y = np.array([0.0, 0.14, 0.32, 0.52, 0.74, 0.92, 1.0], dtype=np.float32)
+BLUE_CURVE_Y =  np.array([0.0, 0.12, 0.29, 0.48, 0.70, 0.90, 1.0], dtype=np.float32)
 
 GLOBAL_SAT_SCALE = 0.90
 
