@@ -20,10 +20,12 @@ Kodak Portra 400 is renowned for its exceptional skin tone rendering and natural
 
 Portra 400 exhibits low contrast with a gentle S-curve. Key specifications:[10][11]
 
-- **Black point**: Lifted to approximately 0.05 (not pure 0), preserving shadow detail
-- **Highlight rolloff**: Soft compression starting at 0.9, topping at 0.98 to avoid clipping
-- **Mid-tone handling**: Slight lift (+2-4%) maintaining smooth transitions
+- **Black point**: Anchored at 0.0 (true black) to preserve full dynamic range
+- **Highlight rolloff**: Soft S-curve compression in upper midtones, anchored at 1.0 (true white)
+- **Mid-tone handling**: Gentle S-curve shape with slight lift in midtones, maintaining smooth transitions
 - **Overall gamma**: The characteristic S-curve comes from the positive conversion, not the negative itself[11]
+
+**Important**: The Portra look comes from the S-curve shape in the midtones and highlight rolloff, NOT from lifting the black point or compressing the white point. Curve endpoints must remain anchored at (0.0, 0.0) and (1.0, 1.0) to preserve image depth and avoid a "flat" appearance.
 
 ### Technical Implementation Pipeline
 
@@ -88,6 +90,55 @@ All transformation parameters are provided as configurable values including:
 - Exposure compensation
 
 The complete technical specification document includes detailed curve points, color matrices, implementation architecture, code structure recommendations, and success criteria. This specification is designed to be unambiguous and directly implementable by an AI coding agent, with all numerical values, formulas, and processing steps explicitly defined.
+
+### Tuning Portra 400 Tone Curves: Preserving Image Depth
+
+When customizing the Portra 400 tone curves, it's critical to maintain full dynamic range to avoid a "flat" or washed-out appearance. Follow these guidelines:
+
+#### Rule: Anchor the Curve Endpoints
+
+**Always keep curve endpoints fixed:**
+- **Black point**: `curve(0.0) = 0.0` (true black)
+- **White point**: `curve(1.0) = 1.0` (true white)
+
+Lifting the black point (e.g., `curve(0.0) = 0.05`) or reducing the white point (e.g., `curve(1.0) = 0.98`) will compress the dynamic range, resulting in lost depth and a flat, low-contrast look. The authentic Portra 400 film look comes from the S-curve shape in the **midtones and highlight rolloff**, not from endpoint adjustments.
+
+#### Current Curve Control Points
+
+The implementation uses these control points (defined in `portra400_emulation/config.py`):
+
+**Master Tone Curve:**
+```python
+MASTER_CURVE_X = [0.0, 0.10, 0.25, 0.50, 0.75, 0.90, 1.0]
+MASTER_CURVE_Y = [0.0, 0.14, 0.32, 0.52, 0.74, 0.92, 1.0]
+```
+
+**Per-Channel Curves (using same X points):**
+```python
+RED_CURVE_Y   = [0.0, 0.16, 0.34, 0.54, 0.75, 0.92, 1.0]
+GREEN_CURVE_Y = [0.0, 0.14, 0.32, 0.52, 0.74, 0.92, 1.0]
+BLUE_CURVE_Y  = [0.0, 0.12, 0.29, 0.48, 0.70, 0.90, 1.0]
+```
+
+Notice how all curves maintain `(0.0, 0.0)` and `(1.0, 1.0)` endpoints. The characteristic Portra look comes from:
+- Gentle lift in shadows (0.10 → 0.14)
+- Smooth midtone S-curve progression
+- Soft highlight rolloff approaching white point
+- Per-channel variations (blue lifted least, red lifted most)
+
+#### Testing Curve Changes
+
+To regenerate sample outputs after modifying curve control points in `config.py`:
+
+```bash
+# Using the CLI with default settings (no grain)
+python -m fast_foto.cli IMG_3632.JPEG --out test.png --verbose
+
+# Or with the installed command and grain enabled
+fast-foto IMG_3632.JPEG --out test.png --grain --verbose
+```
+
+The output will be saved as a 16-bit PNG with metadata in `test.png.json`. Compare before/after to verify your curve adjustments preserve depth while achieving the desired look.
 
 [1](https://125px.com/docs/film/kodak/e4050-Portra-400.pdf)
 [2](https://business.kodakmoments.com/sites/default/files/files/products/e4050_portra_400.pdf)
